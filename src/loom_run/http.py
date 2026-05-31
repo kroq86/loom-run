@@ -25,7 +25,7 @@ def create_app(db_path: str, settings: Settings) -> Any:
     except ImportError as exc:
         raise RuntimeError("install loom-run with api extra: pip install 'loom-run[api]'") from exc
 
-    app = FastAPI(title="loom-run", version="0.1.0")
+    app = FastAPI(title="loom-run", version="0.2.1")
     runner = build_runner_with_settings(db_path, settings)
 
     async def chat_events(body: ChatRequest) -> AsyncIterator[str]:

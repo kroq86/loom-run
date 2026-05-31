@@ -41,6 +41,24 @@ If you want **incident/deploy runbooks** (not dev chat) → [loom-ops](https://g
 
 More: [Showcase guide](docs/SHOWCASE.md) · [Architecture](docs/ARCHITECTURE.md)
 
+## Loom stack position
+
+The stack is a pyramid, not five equal frameworks. Tail-call optimization is
+the primitive, runner is the durable runtime, xray is the microscope, and the
+apps prove the stack in real workflows.
+
+| Layer | Project | Job |
+| --- | --- | --- |
+| Primitive | [loom-tailcalls](https://github.com/kroq86/loom-tailcalls) | Make async recursive/state-machine loops stack-safe |
+| Runtime kernel | [loom-runner](https://github.com/kroq86/loom-runner) | Make those loops durable, resumable, idempotent |
+| Microscope | [flow-xray](https://github.com/kroq86/flow-xray) | Show what actually happened in one offline HTML trace |
+| Proof app | **loom-run** ← **this repo** | Chat agent reference implementation |
+| Proof app | [loom-ops](https://github.com/kroq86/loom-ops) | Ops/runbook agent reference implementation |
+
+`loom-run` is not `loom-runner`. `loom-runner` is the reusable runtime kernel;
+this repo is the runnable chat/dev showcase that proves the kernel, traces, MCP
+tools, and supervisor pattern work together.
+
 ## Install
 
 **From PyPI:**
@@ -99,7 +117,7 @@ curl -N -X POST http://127.0.0.1:8765/chat \
 
 MCP config: [`mcp.servers.example.json`](mcp.servers.example.json) · env: [docs/ENV.md](docs/ENV.md)
 
-## Full Loom stack map
+## Extended ecosystem map
 
 | Layer | Repo | Role |
 |-------|------|------|

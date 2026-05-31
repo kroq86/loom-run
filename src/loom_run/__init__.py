@@ -7,6 +7,6 @@ Docs: https://kroq86.github.io/loom-stack/
 Repo: https://github.com/kroq86/loom-run
 """
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 __all__ = ["__version__"]

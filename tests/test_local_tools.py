@@ -64,6 +64,12 @@ async def test_search_docs_no_matches(tool_registry: ToolRegistry) -> None:
 
 
 @pytest.mark.asyncio
+async def test_run_tests_path_escape_raises(tool_registry: ToolRegistry) -> None:
+    with pytest.raises(PermissionError, match="path escapes workspace"):
+        await tool_registry.call("run_tests", path="../outside")
+
+
+@pytest.mark.asyncio
 async def test_run_tests_runs_pytest(tool_registry: ToolRegistry, tmp_path: Path) -> None:
     tests_dir = tmp_path / "tests"
     tests_dir.mkdir()

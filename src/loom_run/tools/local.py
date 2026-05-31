@@ -44,11 +44,12 @@ def register_local_tools(registry: ToolRegistry, settings: Settings) -> None:
         }
 
     async def run_tests(path: str = ".") -> dict:
+        tests_path = _resolve_tests_path(workspace, path)
         proc = await asyncio.create_subprocess_exec(
             sys.executable,
             "-m",
             "pytest",
-            path,
+            tests_path,
             "-q",
             cwd=str(workspace),
             stdout=asyncio.subprocess.PIPE,
@@ -70,17 +71,29 @@ def register_local_tools(registry: ToolRegistry, settings: Settings) -> None:
 
 
 def _resolve_workspace_path(workspace: Path, path: str) -> Path:
-    candidate = (workspace / path).resolve()
-    if workspace not in candidate.parents and candidate != workspace:
+    root = workspace.resolve()
+    candidate = (root / path).resolve()
+    if root not in candidate.parents and candidate != root:
         raise PermissionError(f"path escapes workspace: {path}")
     if not candidate.is_file():
         raise FileNotFoundError(path)
     return candidate
 
 
+def _resolve_tests_path(workspace: Path, path: str) -> str:
+    if path in ("", "."):
+        return "."
+    root = workspace.resolve()
+    candidate = (root / path).resolve()
+    if root not in candidate.parents and candidate != root:
+        raise PermissionError(f"path escapes workspace: {path}")
+    return str(candidate.relative_to(root))
+
+
 def run_tests_sync(workspace: Path, path: str = ".") -> dict:
+    tests_path = _resolve_tests_path(workspace, path)
     completed = subprocess.run(
-        [sys.executable, "-m", "pytest", path, "-q"],
+        [sys.executable, "-m", "pytest", tests_path, "-q"],
         cwd=str(workspace),
         capture_output=True,
         text=True,

@@ -15,6 +15,8 @@ All settings can also be passed via CLI flags (see `loom-run --help`).
 | `LOOM_RUN_HOST` | `127.0.0.1` | Bind address for `loom-run serve`. |
 | `LOOM_RUN_PORT` | `8765` | Port for `loom-run serve`. |
 
+Security: default `LOOM_RUN_HOST=127.0.0.1`; HTTP has no auth in v0.2.x. Use a trusted local bind or put auth/TLS in front for non-local deployments.
+
 Copy [`.env.example`](../.env.example) as a starting point:
 
 ```bash
