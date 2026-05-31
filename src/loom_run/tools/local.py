@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 from loom_agent.tools import ToolRegistry
@@ -44,7 +45,7 @@ def register_local_tools(registry: ToolRegistry, settings: Settings) -> None:
 
     async def run_tests(path: str = ".") -> dict:
         proc = await asyncio.create_subprocess_exec(
-            "python",
+            sys.executable,
             "-m",
             "pytest",
             path,
@@ -79,7 +80,7 @@ def _resolve_workspace_path(workspace: Path, path: str) -> Path:
 
 def run_tests_sync(workspace: Path, path: str = ".") -> dict:
     completed = subprocess.run(
-        ["python", "-m", "pytest", path, "-q"],
+        [sys.executable, "-m", "pytest", path, "-q"],
         cwd=str(workspace),
         capture_output=True,
         text=True,

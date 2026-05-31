@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import tempfile
 from pathlib import Path
 
@@ -64,11 +63,3 @@ async def test_explain_run(mock_settings: Settings) -> None:
         assert explanation.run_id == "demo"
         assert explanation.tool_call_count >= 1
 
-
-@pytest.mark.skipif(not os.getenv("LOOM_RUN_MCP_CONFIG"), reason="MCP config not set")
-@pytest.mark.asyncio
-async def test_mcp_config_loads() -> None:
-    from loom_run.tools.mcp_stdio import load_mcp_config
-
-    configs = load_mcp_config(os.environ["LOOM_RUN_MCP_CONFIG"])
-    assert configs

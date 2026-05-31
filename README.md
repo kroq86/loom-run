@@ -2,11 +2,25 @@
 
 [![Loom stack](https://img.shields.io/badge/docs-loom--stack-8B7355)](https://kroq86.github.io/loom-stack/)
 
-**Local-first durable chat agent** built on the [Loom stack](https://kroq86.github.io/loom-stack/): coordinator pattern from [agents_architecture](https://github.com/kroq86/agents_architecture) as a `loom-runner` step — not a full port of that backend.
+**Local-first durable chat agent** on the [Loom stack](https://kroq86.github.io/loom-stack/).
+
+Not a full port of [agents_architecture](https://github.com/kroq86/agents_architecture) — a portable shell with the same coordinator loop (LLM → tool or finish → checkpoint), without FastAPI/SQLAlchemy/OTel/HITL.
 
 ```text
 User message  →  coordinator step (LLM + tools)  →  loom-runner checkpoint/resume  →  flow-xray --trace
 ```
+
+## What it is for
+
+Most agent frameworks optimize for a quick demo. **loom-run** optimizes for **inspectable, resumable runs**:
+
+- crash mid-run → `loom-run resume` continues from SQLite checkpoint
+- tool retries → idempotent calls via `loom-runner`
+- “what happened?” → `explain`, tool-call history, optional HTML trace
+
+**Good fit:** local development, CI without API keys (MockLLM), wiring MCP tools with local fallbacks.
+
+**Not a fit:** multi-agent orchestration, hosted threads, IDE coding agents, production platform out of the box.
 
 ## Install
 
@@ -48,6 +62,18 @@ export LOOM_RUN_MCP_CONFIG=/path/to/mcp.servers.json
 export LOOM_RUN_WORKSPACE=/path/to/project
 ```
 
+## HTTP API (optional)
+
+```bash
+pip install -e ".[dev,api]"
+loom-run serve --db runs.sqlite --mock-llm
+curl -N -X POST http://127.0.0.1:8765/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"explain checkpoint policy","run_id":"demo","max_steps":20}'
+```
+
+SSE events: `started` → `step` (repeat) → `completed` | `paused` | `error`.
+
 ## Also via loom-runner CLI
 
 ```bash
@@ -67,13 +93,18 @@ Set `LOOM_RUN_USER_MESSAGE` before running the example module.
 | Verification MCP | [rule-based-verifier](https://github.com/kroq86/rule-based-verifier) |
 | Memory/RAG MCP | [mcp-docs-memory](https://github.com/kroq86/mcp-docs-memory) |
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+## Docs
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [Environment variables](docs/ENV.md)
 
 ## Tests
 
 ```bash
 python -m pytest -q
 ```
+
+MCP smoke (mock stdio server, no external deps): `python -m pytest -q tests/test_mcp_smoke.py`
 
 ## License
 

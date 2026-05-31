@@ -16,6 +16,8 @@ from loom_run.config import Settings, load_settings
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
+    if args.command == "serve":
+        return _run_serve(args)
     settings = _settings_from_args(args)
     runner = build_runner_with_settings(args.db, settings)
 
@@ -65,6 +67,11 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     _add_common_args(explain)
     explain.add_argument("--run-id", required=True)
 
+    serve = sub.add_parser("serve", help="Start HTTP server with SSE /chat")
+    _add_common_args(serve)
+    serve.add_argument("--host", default=os.environ.get("LOOM_RUN_HOST", "127.0.0.1"))
+    serve.add_argument("--port", type=int, default=int(os.environ.get("LOOM_RUN_PORT", "8765")))
+
     return parser.parse_args(argv)
 
 
@@ -99,6 +106,25 @@ def _settings_from_args(args: argparse.Namespace) -> Settings:
             mcp_config_path=settings.mcp_config_path,
         )
     return settings
+
+
+def _run_serve(args: argparse.Namespace) -> int:
+    if args.workspace:
+        os.environ["LOOM_RUN_WORKSPACE"] = str(Path(args.workspace).resolve())
+    if args.mcp_config:
+        os.environ["LOOM_RUN_MCP_CONFIG"] = str(Path(args.mcp_config).resolve())
+    if getattr(args, "mock_llm", False):
+        os.environ["LOOM_RUN_MOCK_LLM"] = "1"
+    settings = load_settings()
+    try:
+        import uvicorn
+    except ImportError as exc:
+        raise SystemExit("install api extra: pip install 'loom-run[api]'") from exc
+    from loom_run.http import create_app
+
+    app = create_app(args.db, settings)
+    uvicorn.run(app, host=args.host, port=args.port, log_level="info")
+    return 0
 
 
 def _to_jsonable(value: Any) -> Any:

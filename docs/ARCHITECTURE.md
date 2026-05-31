@@ -2,7 +2,18 @@
 
 ## Product boundary
 
-`loom-run` is a **portable product shell**: one coordinator turn per `loom-runner` step, mock or OpenAI LLM, local tools with optional MCP overrides. It extracts the loop shape from [agents_architecture](https://github.com/kroq86/agents_architecture) without FastAPI, SQLAlchemy session state, OTel, or HITL queues.
+`loom-run` is a **portable product shell**: one coordinator turn per `loom-runner` step, mock or OpenAI LLM, local tools with optional MCP overrides. It extracts the loop shape from [agents_architecture](https://github.com/kroq86/agents_architecture) without SQLAlchemy session state, OTel, or HITL queues.
+
+## Positioning
+
+| | loom-run | Typical agent framework |
+|---|----------|-------------------------|
+| Primary goal | Durable, inspectable runs | Fast demo / graph composition |
+| State | SQLite checkpoints (`loom-runner`) | In-memory or vendor-hosted |
+| Scope | Single coordinator, 3 tools | Multi-agent, large plugin ecosystems |
+| MCP | Optional stdio bridge + local fallbacks | Often MCP-first or absent |
+
+Comparable stacks: LangGraph/LangChain (graphs), OpenAI Assistants (hosted threads), Temporal+agent (workflow-grade durability). loom-run is lighter and local-first — a reference product for the Loom runtime, not a market competitor.
 
 ## kroq86 stack map
 
@@ -21,7 +32,7 @@
 ## Data flow
 
 ```text
-CLI (loom-run chat)
+CLI (loom-run chat | serve)
   → Settings + ToolRegistry (local + optional MCP)
   → make_step(MockLLM | OpenAI)
   → AgentRunner.start/resume (SQLite)
@@ -45,7 +56,13 @@ CLI (loom-run chat)
 
 ## Deferred
 
-- FastAPI `/chat` SSE service
 - Subagent runtime
-- PyPI publish (after CI hardening)
 - OrgMCP leaf → loom-run step mapping
+- Unified memory contract across stack repos
+
+## Shipped in v0.1 hardening
+
+- Tool edge-case tests (`read_file` path escape, `search_docs`, `run_tests`)
+- MCP smoke via in-repo mock stdio server (CI opt-in: `.github/workflows/mcp-smoke.yml`)
+- HTTP SSE `/chat` — [`src/loom_run/http.py`](../src/loom_run/http.py), `loom-run serve`
+- Environment variable reference — [ENV.md](ENV.md)

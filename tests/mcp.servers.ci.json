@@ -1,0 +1,11 @@
+{
+  "mock-verifier": {
+    "command": "REPLACE_PYTHON",
+    "args": ["REPLACE_MOCK_SERVER"],
+    "env": {},
+    "tools": {
+      "run_tests": "run_tests",
+      "read_file": "read_repo_file"
+    }
+  }
+}
