@@ -11,6 +11,10 @@ from typing import Any
 from flow_xray import trace
 
 from loom_run.agents.chat_agent import build_runner_with_settings, make_initial_state
+from loom_run.agents.supervisor_agent import (
+    build_supervisor_runner,
+    make_supervisor_initial_state,
+)
 from loom_run.config import Settings, load_settings
 
 
@@ -19,11 +23,26 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "serve":
         return _run_serve(args)
     settings = _settings_from_args(args)
-    runner = build_runner_with_settings(args.db, settings)
+
+    if args.command == "supervise":
+        runner = build_supervisor_runner(args.db, settings, child_max_steps=args.max_steps)
+    else:
+        runner = build_runner_with_settings(args.db, settings)
 
     async def execute() -> Any:
         if args.command == "chat":
             state = make_initial_state(args.message, max_tool_calls=args.max_tool_calls)
+            return await runner.start(
+                run_id=args.run_id,
+                initial_state=state,
+                max_steps=args.max_steps,
+            )
+        if args.command == "supervise":
+            state = make_supervisor_initial_state(
+                args.run_id,
+                args.message,
+                max_tool_calls=args.max_tool_calls,
+            )
             return await runner.start(
                 run_id=args.run_id,
                 initial_state=state,
@@ -35,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
             return runner.explain_run(args.run_id)
         raise ValueError(f"unknown command: {args.command}")
 
-    if args.trace:
+    if getattr(args, "trace", None):
         result = trace.run(lambda: asyncio.run(execute()))
         result.to_html(args.trace)
         payload = result.return_value
@@ -56,6 +75,13 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     chat.add_argument("--run-id", required=True)
     chat.add_argument("--max-steps", type=int, default=20)
     chat.add_argument("--trace")
+
+    supervise = sub.add_parser("supervise", help="Start a multi-agent supervisor run")
+    _add_common_args(supervise)
+    supervise.add_argument("message")
+    supervise.add_argument("--run-id", required=True)
+    supervise.add_argument("--max-steps", type=int, default=20)
+    supervise.add_argument("--trace")
 
     resume = sub.add_parser("resume", help="Resume a chat run")
     _add_common_args(resume)
@@ -90,12 +116,12 @@ def _settings_from_args(args: argparse.Namespace) -> Settings:
         os.environ["LOOM_RUN_MCP_CONFIG"] = str(Path(args.mcp_config).resolve())
     if args.max_tool_calls is not None:
         os.environ["LOOM_RUN_MAX_TOOL_CALLS"] = str(args.max_tool_calls)
-    if args.command == "chat":
+    if args.command in {"chat", "supervise"}:
         os.environ["LOOM_RUN_USER_MESSAGE"] = args.message
     if getattr(args, "mock_llm", False):
         os.environ["LOOM_RUN_MOCK_LLM"] = "1"
     settings = load_settings()
-    if args.command == "chat" and not settings.user_message:
+    if args.command in {"chat", "supervise"} and not settings.user_message:
         settings = Settings(
             workspace=settings.workspace,
             mock_llm=settings.mock_llm,
