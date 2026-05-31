@@ -2,7 +2,7 @@
 
 **Social preview image:** `https://kroq86.github.io/loom-stack/assets/loom-stack-og.svg`
 
-**README banner:** `https://kroq86.github.io/loom-stack/assets/loom-stack-banner.svg`
+**README banner:** `https://kroq86.github.io/loom-stack/assets/loom-stack-banner.png`
 
 **Logo:** `https://kroq86.github.io/loom-stack/assets/loom-stack-logo.svg`
 
