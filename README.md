@@ -1,3 +1,5 @@
+[![Loom Stack](https://kroq86.github.io/loom-stack/assets/loom-stack-banner.svg)](https://kroq86.github.io/loom-stack/)
+
 # loom-run — official Loom stack showcase
 
 [![GitHub](https://img.shields.io/github/stars/kroq86/loom-run?style=social)](https://github.com/kroq86/loom-run)

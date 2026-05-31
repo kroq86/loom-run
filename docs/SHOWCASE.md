@@ -18,6 +18,9 @@
 | **Production coordinator reference** | https://github.com/kroq86/agents_architecture |
 | **Verification MCP** | https://github.com/kroq86/rule-based-verifier |
 | **Docs/memory MCP** | https://github.com/kroq86/mcp-docs-memory |
+| **Banner (all repos)** | https://kroq86.github.io/loom-stack/assets/loom-stack-banner.svg |
+| **OG / social image** | https://kroq86.github.io/loom-stack/assets/loom-stack-og.svg |
+| **Logo** | https://kroq86.github.io/loom-stack/assets/loom-stack-logo.svg |
 | **CI / tests badge** | https://github.com/kroq86/loom-run/actions/workflows/tests.yml |
 
 ## What to call it (positioning)

@@ -1,5 +1,13 @@
 # GitHub repository metadata (copy to repo About / Description)
 
+**Social preview image:** `https://kroq86.github.io/loom-stack/assets/loom-stack-og.svg`
+
+**README banner:** `https://kroq86.github.io/loom-stack/assets/loom-stack-banner.svg`
+
+**Logo:** `https://kroq86.github.io/loom-stack/assets/loom-stack-logo.svg`
+
+See [loom-stack/assets](https://github.com/kroq86/loom-stack/tree/main/assets) for source SVGs.
+
 **Description (short, ≤350 chars):**
 Official Loom stack showcase — local-first durable chat agent with checkpoint/resume, multi-agent supervisor, MCP tools, offline traces. Built on loom-runner + flow-xray. https://kroq86.github.io/loom-stack/
 
