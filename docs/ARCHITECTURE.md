@@ -2,7 +2,9 @@
 
 ## Product boundary
 
-`loom-run` is a **portable product shell**: one coordinator turn per `loom-runner` step, mock or OpenAI LLM, local tools with optional MCP overrides. It extracts the loop shape from [agents_architecture](https://github.com/kroq86/agents_architecture) without SQLAlchemy session state, OTel, or HITL queues.
+`loom-run` is the **official Loom stack showcase** — a **portable reference product**: coordinator turn per `loom-runner` step, mock or OpenAI LLM, local tools with optional MCP overrides, sequential supervisor/subagent (v0.2). Marketing & links: [SHOWCASE.md](SHOWCASE.md) · hub: [loom-stack](https://kroq86.github.io/loom-stack/).
+
+It extracts the loop shape from [agents_architecture](https://github.com/kroq86/agents_architecture) without SQLAlchemy session state, OTel, or HITL queues.
 
 ## Positioning
 
@@ -33,6 +35,7 @@ Child runs reuse the chat coordinator ([`make_step`](../src/loom_run/coordinator
 
 | Repo | Role in ecosystem | Wired in loom-run |
 |------|-------------------|-------------------|
+| **[loom-run](https://github.com/kroq86/loom-run)** | **Official stack showcase (this repo)** | — |
 | [loom-tailcalls](https://github.com/kroq86/loom-tailcalls) | Stack-safe `@tailrec` driver inside loom-runner | via pip dependency |
 | [loom-runner](https://github.com/kroq86/loom-runner) | SQLite checkpoint/resume, idempotent tools, CLI inspect | core runtime |
 | [flow-xray](https://github.com/kroq86/flow-xray) | Local HTML traces | `--trace` in CLI |

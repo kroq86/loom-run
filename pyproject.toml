@@ -4,13 +4,47 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "loom-run"
-version = "0.1.0"
-description = "Local-first durable chat agent product built on the Loom stack."
+version = "0.2.0"
+description = "Official Loom stack showcase: local-first durable chat agent with checkpoint/resume, multi-agent supervisor, MCP tools, and offline traces."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 authors = [{ name = "kroq86" }]
-keywords = ["agents", "async", "checkpoint", "loom", "mcp", "local-first"]
+keywords = [
+    "agents",
+    "ai-agents",
+    "async",
+    "checkpoint",
+    "durable-execution",
+    "flow-xray",
+    "langgraph-alternative",
+    "local-first",
+    "loom",
+    "loom-runner",
+    "loom-stack",
+    "mcp",
+    "model-context-protocol",
+    "multi-agent",
+    "multi-agent-orchestration",
+    "resumable-agents",
+    "sqlite",
+    "supervisor",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
 dependencies = [
     "loom-runner>=0.1.1",
     "loom-tailcalls>=0.2.1",
@@ -29,7 +63,12 @@ loom-run = "loom_run.cli:main"
 Homepage = "https://github.com/kroq86/loom-run"
 Repository = "https://github.com/kroq86/loom-run"
 Documentation = "https://kroq86.github.io/loom-stack/"
-"Loom stack" = "https://kroq86.github.io/loom-stack/"
+Issues = "https://github.com/kroq86/loom-run/issues"
+Changelog = "https://github.com/kroq86/loom-run/commits/main"
+"Loom stack (showcase hub)" = "https://kroq86.github.io/loom-stack/"
+"loom-runner (runtime)" = "https://github.com/kroq86/loom-runner"
+"flow-xray (traces)" = "https://github.com/kroq86/flow-xray"
+"agents_architecture (reference)" = "https://github.com/kroq86/agents_architecture"
 
 [tool.setuptools.packages.find]
 where = ["src"]

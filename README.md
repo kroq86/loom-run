@@ -1,46 +1,55 @@
-# loom-run
+# loom-run — official Loom stack showcase
 
-[![Loom stack](https://img.shields.io/badge/docs-loom--stack-8B7355)](https://kroq86.github.io/loom-stack/)
+[![GitHub](https://img.shields.io/github/stars/kroq86/loom-run?style=social)](https://github.com/kroq86/loom-run)
+[![Loom stack docs](https://img.shields.io/badge/Loom_stack-showcase-8B7355)](https://kroq86.github.io/loom-stack/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Tests](https://github.com/kroq86/loom-run/actions/workflows/tests.yml/badge.svg)](https://github.com/kroq86/loom-run/actions/workflows/tests.yml)
 
-**Local-first durable chat agent** on the [Loom stack](https://kroq86.github.io/loom-stack/).
+> **Official reference product** for the [Loom stack](https://kroq86.github.io/loom-stack/) — not a generic agent framework, but the **runnable demo** that wires [loom-runner](https://github.com/kroq86/loom-runner) + [flow-xray](https://github.com/kroq86/flow-xray) into a local-first durable chat agent with multi-agent supervisor.
 
-Not a full port of [agents_architecture](https://github.com/kroq86/agents_architecture) — a portable shell with the same coordinator loop (LLM → tool or finish → checkpoint), without FastAPI/SQLAlchemy/OTel/HITL.
+**Keywords:** durable agents · checkpoint resume · multi-agent orchestration · MCP tools · local-first · SQLite · inspectable runs · LangGraph alternative (runtime slice)
+
+| | |
+|---|---|
+| **Showcase hub** | [kroq86.github.io/loom-stack](https://kroq86.github.io/loom-stack/) |
+| **This repo** | [github.com/kroq86/loom-run](https://github.com/kroq86/loom-run) |
+| **Runtime layer** | [github.com/kroq86/loom-runner](https://github.com/kroq86/loom-runner) |
+| **Local traces** | [github.com/kroq86/flow-xray](https://github.com/kroq86/flow-xray) |
 
 ```text
-User message  →  coordinator step (LLM + tools)  →  loom-runner checkpoint/resume  →  flow-xray --trace
+User message  →  coordinator (LLM + tools)  →  loom-runner checkpoint/resume  →  flow-xray --trace
+                      ↑ supervise → subagent runs (v0.2)
 ```
 
-## What it is for
+## What this repo is
 
-Most agent frameworks optimize for a quick demo. **loom-run** optimizes for **inspectable, resumable runs**:
+| Role | Explanation |
+|------|-------------|
+| **Showcase / reference product** | End-to-end proof that the Loom stack works: CLI, mock LLM (CI-safe), tools, supervisor, E2E tests |
+| **Not** | LangGraph, CrewAI, or a hosted agent platform |
+| **Built on** | [loom-runner](https://github.com/kroq86/loom-runner) (durability), [loom-tailcalls](https://github.com/kroq86/loom-tailcalls) (loop shape), [flow-xray](https://github.com/kroq86/flow-xray) (HTML traces) |
+| **Pattern from** | [agents_architecture](https://github.com/kroq86/agents_architecture) — coordinator loop only, not full backend |
 
-- crash mid-run → `loom-run resume` continues from SQLite checkpoint
-- tool retries → idempotent calls via `loom-runner`
-- “what happened?” → `explain`, tool-call history, optional HTML trace
+If you want **libraries to compose** → start with [loom-runner](https://github.com/kroq86/loom-runner).  
+If you want **see it all working in 30 seconds** → clone this repo.
 
-**Good fit today:** local development, CI without API keys (MockLLM), wiring MCP tools with local fallbacks, single-agent and **supervisor → subagent** runs.
-
-**Multi-agent (v0.2):** `loom-run supervise` delegates to a checkpointed child run (`{run_id}:sub:{agent_name}`), then merges the result.
-
-**Not a fit today:** parallel agent crews, OpenAI supervisor LLM, hosted threads, IDE coding agents.
+More: [Showcase guide](docs/SHOWCASE.md) · [Architecture](docs/ARCHITECTURE.md)
 
 ## Install
 
 ```bash
-python3.13 -m venv .venv
-source .venv/bin/activate
+git clone https://github.com/kroq86/loom-run.git
+cd loom-run
+python3.13 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 ```
 
-Optional OpenAI:
+Optional: OpenAI (`pip install -e ".[dev,openai]"`), HTTP server (`pip install -e ".[dev,api]"`).
 
-```bash
-pip install -e ".[dev,openai]"
-export OPENAI_API_KEY=...
-export LOOM_RUN_MOCK_LLM=0
-```
+## Demo commands (copy-paste)
 
-## Quick start (mock LLM — no API key)
+**Single agent (mock LLM, no API key):**
 
 ```bash
 loom-run chat "explain checkpoint policy" --run-id demo --db runs.sqlite --mock-llm
@@ -49,75 +58,58 @@ loom-run explain --run-id demo --db runs.sqlite
 loom-run chat "explain checkpoint policy" --run-id demo2 --db runs.sqlite --mock-llm --trace trace.html
 ```
 
-## Multi-agent supervisor (v0.2, mock LLM)
+**Multi-agent supervisor (v0.2):**
 
 ```bash
 loom-run supervise "explain checkpoint policy" --run-id team-demo --db runs.sqlite --mock-llm
-loom-run explain --run-id team-demo --db runs.sqlite
 loom-run explain --run-id team-demo:sub:researcher --db runs.sqlite
 ```
 
-Parent run delegates to child `team-demo:sub:researcher` (same chat coordinator + tools), then merges the answer.
-
-## Tools
-
-| Tool | Default | With MCP |
-|------|---------|----------|
-| `read_file` | local workspace read | `rule-based-verifier` → `read_repo_file` |
-| `search_docs` | grep `*.md` in workspace | `docs-memory` → `docs_search` |
-| `run_tests` | `pytest -q` in workspace | `rule-based-verifier` → `run_tests` |
-
-Copy [`mcp.servers.example.json`](mcp.servers.example.json) and set:
+**HTTP SSE (optional):**
 
 ```bash
-export LOOM_RUN_MCP_CONFIG=/path/to/mcp.servers.json
-export LOOM_RUN_WORKSPACE=/path/to/project
-```
-
-## HTTP API (optional)
-
-```bash
-pip install -e ".[dev,api]"
 loom-run serve --db runs.sqlite --mock-llm
 curl -N -X POST http://127.0.0.1:8765/chat \
   -H 'Content-Type: application/json' \
   -d '{"message":"explain checkpoint policy","run_id":"demo","max_steps":20}'
 ```
 
-SSE events: `started` → `step` (repeat) → `completed` | `paused` | `error`.
+## Tools
 
-## Also via loom-runner CLI
+| Tool | Default | With MCP |
+|------|---------|----------|
+| `read_file` | local workspace read | [rule-based-verifier](https://github.com/kroq86/rule-based-verifier) → `read_repo_file` |
+| `search_docs` | grep `*.md` in workspace | [mcp-docs-memory](https://github.com/kroq86/mcp-docs-memory) → `docs_search` |
+| `run_tests` | `pytest -q` in workspace | rule-based-verifier → `run_tests` |
+| `delegate_subagent` | supervisor → child chat run | — |
 
-```bash
-loom-runner run examples/chat_agent.py --run-id demo --db runs.sqlite --max-steps 10
-```
+MCP config: [`mcp.servers.example.json`](mcp.servers.example.json) · env: [docs/ENV.md](docs/ENV.md)
 
-Set `LOOM_RUN_USER_MESSAGE` before running the example module.
+## Full Loom stack map
 
-## Stack map
-
-| Layer | Repo |
-|-------|------|
-| Transitions | [loom-tailcalls](https://github.com/kroq86/loom-tailcalls) |
-| Durability | [loom-runner](https://github.com/kroq86/loom-runner) |
-| Traces | [flow-xray](https://github.com/kroq86/flow-xray) |
-| Coordinator reference | [agents_architecture](https://github.com/kroq86/agents_architecture) |
-| Verification MCP | [rule-based-verifier](https://github.com/kroq86/rule-based-verifier) |
-| Memory/RAG MCP | [mcp-docs-memory](https://github.com/kroq86/mcp-docs-memory) |
-
-## Docs
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [Environment variables](docs/ENV.md)
+| Layer | Repo | Role |
+|-------|------|------|
+| **Showcase (this repo)** | [loom-run](https://github.com/kroq86/loom-run) | Reference chat agent + supervisor |
+| Durability | [loom-runner](https://github.com/kroq86/loom-runner) | SQLite checkpoint, resume, idempotent tools |
+| Transitions | [loom-tailcalls](https://github.com/kroq86/loom-tailcalls) | Stack-safe `@tailrec` driver |
+| Traces | [flow-xray](https://github.com/kroq86/flow-xray) | Offline HTML execution traces |
+| Coordinator reference | [agents_architecture](https://github.com/kroq86/agents_architecture) | Production backend patterns |
+| Verification MCP | [rule-based-verifier](https://github.com/kroq86/rule-based-verifier) | Tests, lint, repo read |
+| Docs/memory MCP | [mcp-docs-memory](https://github.com/kroq86/mcp-docs-memory) | Semantic docs search |
 
 ## Tests
 
 ```bash
-python -m pytest -q
+python -m pytest -q              # 21 tests incl. subprocess E2E
+python -m pytest -q tests/test_e2e.py
 ```
 
-MCP smoke (mock stdio server, no external deps): `python -m pytest -q tests/test_mcp_smoke.py`
+## Docs
+
+- [Showcase & discovery](docs/SHOWCASE.md) — SEO, links, positioning
+- [Architecture](docs/ARCHITECTURE.md)
+- [Environment variables](docs/ENV.md)
 
 ## License
 
-MIT
+MIT · [kroq86](https://github.com/kroq86)

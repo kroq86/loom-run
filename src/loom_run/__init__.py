@@ -1,3 +1,12 @@
-"""Loom Run — durable local chat agent on the Loom stack."""
+"""Loom Run — official showcase of the Loom stack.
 
-__version__ = "0.1.0"
+Reference product: durable local chat agent with coordinator, supervisor/subagent,
+MCP tools, and CLI inspection. Built on loom-runner + loom-tailcalls + flow-xray.
+
+Docs: https://kroq86.github.io/loom-stack/
+Repo: https://github.com/kroq86/loom-run
+"""
+
+__version__ = "0.2.0"
+
+__all__ = ["__version__"]
