@@ -11,6 +11,7 @@
 | Resource | URL |
 |----------|-----|
 | **Showcase repo (this project)** | https://github.com/kroq86/loom-run |
+| **Ops product fork (runbooks)** | https://github.com/kroq86/loom-ops |
 | **Loom stack hub (start here)** | https://kroq86.github.io/loom-stack/ |
 | **Runtime / durability library** | https://github.com/kroq86/loom-runner |
 | **Stack-safe loop shape** | https://github.com/kroq86/loom-tailcalls |

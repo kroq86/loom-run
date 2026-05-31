@@ -18,6 +18,7 @@
 | **This repo** | [github.com/kroq86/loom-run](https://github.com/kroq86/loom-run) |
 | **Runtime layer** | [github.com/kroq86/loom-runner](https://github.com/kroq86/loom-runner) |
 | **Local traces** | [github.com/kroq86/flow-xray](https://github.com/kroq86/flow-xray) |
+| **Ops product** | [github.com/kroq86/loom-ops](https://github.com/kroq86/loom-ops) — runbooks, HITL, incident response |
 
 ```text
 User message  →  coordinator (LLM + tools)  →  loom-runner checkpoint/resume  →  flow-xray --trace
@@ -34,7 +35,8 @@ User message  →  coordinator (LLM + tools)  →  loom-runner checkpoint/resume
 | **Pattern from** | [agents_architecture](https://github.com/kroq86/agents_architecture) — coordinator loop only, not full backend |
 
 If you want **libraries to compose** → start with [loom-runner](https://github.com/kroq86/loom-runner).  
-If you want **see it all working in 30 seconds** → clone this repo.
+If you want **see it all working in 30 seconds** → clone this repo.  
+If you want **incident/deploy runbooks** (not dev chat) → [loom-ops](https://github.com/kroq86/loom-ops).
 
 More: [Showcase guide](docs/SHOWCASE.md) · [Architecture](docs/ARCHITECTURE.md)
 
@@ -91,7 +93,8 @@ MCP config: [`mcp.servers.example.json`](mcp.servers.example.json) · env: [docs
 
 | Layer | Repo | Role |
 |-------|------|------|
-| **Showcase (this repo)** | [loom-run](https://github.com/kroq86/loom-run) | Reference chat agent + supervisor |
+| **Dev showcase (this repo)** | [loom-run](https://github.com/kroq86/loom-run) | Reference chat agent + supervisor |
+| **Ops product** | [loom-ops](https://github.com/kroq86/loom-ops) | Runbook supervisor (planner / executor / verifier) |
 | Durability | [loom-runner](https://github.com/kroq86/loom-runner) | SQLite checkpoint, resume, idempotent tools |
 | Transitions | [loom-tailcalls](https://github.com/kroq86/loom-tailcalls) | Stack-safe `@tailrec` driver |
 | Traces | [flow-xray](https://github.com/kroq86/flow-xray) | Offline HTML execution traces |
