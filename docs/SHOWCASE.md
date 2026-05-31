@@ -91,18 +91,13 @@ Add on the repo **About** field (github.com/kroq86/loom-run → Settings or edit
 
 ## Where to link loom-run from sibling repos
 
-When documenting other kroq86 repos, link back with:
+Backlinks added on: **loom-stack** (site + README), **loom-tailcalls**, **loom-runner**, **flow-xray**.
+
+When documenting other kroq86 repos, use:
 
 ```markdown
-See the official showcase: [loom-run](https://github.com/kroq86/loom-run) · [Loom stack hub](https://kroq86.github.io/loom-stack/)
+**Official showcase:** [loom-run](https://github.com/kroq86/loom-run) · [Loom stack hub](https://kroq86.github.io/loom-stack/)
 ```
-
-Suggested placement:
-
-- **loom-runner** README — “Reference product: loom-run”
-- **flow-xray** README — “Used by loom-run with `--trace`”
-- **loom-stack site** — already lists Loom Run (product) section
-- **agents_architecture** — “Portable shell: loom-run”
 
 ## Social / snippet templates
 
