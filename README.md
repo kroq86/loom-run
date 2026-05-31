@@ -2,6 +2,7 @@
 
 # loom-run — official Loom stack showcase
 
+[![PyPI](https://img.shields.io/pypi/v/loom-run)](https://pypi.org/project/loom-run/)
 [![GitHub](https://img.shields.io/github/stars/kroq86/loom-run?style=social)](https://github.com/kroq86/loom-run)
 [![Loom stack docs](https://img.shields.io/badge/Loom_stack-showcase-8B7355)](https://kroq86.github.io/loom-stack/)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -42,14 +43,23 @@ More: [Showcase guide](docs/SHOWCASE.md) · [Architecture](docs/ARCHITECTURE.md)
 
 ## Install
 
+**From PyPI:**
+
+```bash
+pip install "loom-run[api,openai]"
+loom-run chat "explain checkpoint policy" --run-id demo --db runs.sqlite --mock-llm
+```
+
+**From source:**
+
 ```bash
 git clone https://github.com/kroq86/loom-run.git
 cd loom-run
 python3.13 -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+pip install -e ".[dev,api,openai]"
 ```
 
-Optional: OpenAI (`pip install -e ".[dev,openai]"`), HTTP server (`pip install -e ".[dev,api]"`).
+Ecosystem map: [loom-stack ECOSYSTEM.md](https://github.com/kroq86/loom-stack/blob/main/docs/ECOSYSTEM.md)
 
 ## Demo commands (copy-paste)
 
