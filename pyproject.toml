@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "loom-run"
+version = "0.1.0"
+description = "Local-first durable chat agent product built on the Loom stack."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "kroq86" }]
+keywords = ["agents", "async", "checkpoint", "loom", "mcp", "local-first"]
+dependencies = [
+    "loom-runner>=0.1.1",
+    "loom-tailcalls>=0.2.1",
+    "flow-xray>=0.3.4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "pytest-asyncio>=0.23"]
+openai = ["openai>=1.0"]
+
+[project.scripts]
+loom-run = "loom_run.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/kroq86/loom-run"
+Repository = "https://github.com/kroq86/loom-run"
+Documentation = "https://kroq86.github.io/loom-stack/"
+"Loom stack" = "https://kroq86.github.io/loom-stack/"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

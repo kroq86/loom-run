@@ -1,0 +1,23 @@
+{
+  "rule-based-verifier": {
+    "command": "/absolute/path/to/rule-based-verifier/.venv/bin/python",
+    "args": ["-m", "rule_based_verifier_mcp"],
+    "env": {
+      "WORKSPACE_ROOT": "/absolute/path/to/your/project"
+    },
+    "tools": {
+      "run_tests": "run_tests",
+      "read_file": "read_repo_file"
+    }
+  },
+  "docs-memory": {
+    "command": "/absolute/path/to/docs-memory-mcp/.venv/bin/python",
+    "args": ["-m", "docs_memory_mcp"],
+    "env": {
+      "DOCS_ROOT": "/absolute/path/to/docs"
+    },
+    "tools": {
+      "search_docs": "docs_search"
+    }
+  }
+}
