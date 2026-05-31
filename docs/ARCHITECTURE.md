@@ -6,14 +6,29 @@
 
 ## Positioning
 
-| | loom-run | Typical agent framework |
-|---|----------|-------------------------|
-| Primary goal | Durable, inspectable runs | Fast demo / graph composition |
-| State | SQLite checkpoints (`loom-runner`) | In-memory or vendor-hosted |
-| Scope | Single coordinator, 3 tools | Multi-agent, large plugin ecosystems |
-| MCP | Optional stdio bridge + local fallbacks | Often MCP-first or absent |
+| | loom-run v0.1 | Where the market is (2026) |
+|---|---------------|----------------------------|
+| Primary goal | Durable, inspectable **single-agent** runs | Durable **multi-agent** orchestration |
+| State | SQLite checkpoints (`loom-runner`) | Same bet (LangGraph checkpointers, Temporal) |
+| Tools | MCP optional + local fallbacks | MCP as shared tool standard |
+| Scope today | One coordinator, 3 tools | Graphs / crews / supervisor + specialists |
 
-Comparable stacks: LangGraph/LangChain (graphs), OpenAI Assistants (hosted threads), Temporal+agent (workflow-grade durability). loom-run is lighter and local-first — a reference product for the Loom runtime, not a market competitor.
+**Trend check:** production agents moved from “one LLM loop” to **networks of specialists** with persistent state — LangGraph for graph control, CrewAI for role-based crews, MCP for portable tools. Durability and inspectability are table stakes, not differentiators anymore.
+
+**Loom bet:** `loom-runner` owns durability (checkpoint, resume, idempotent tools); **loom-run** owns the coordinator step; a **supervisor layer** (next) owns multi-agent routing — delegate → sub-run → merge, each leaf checkpointed.
+
+Comparable stacks: LangGraph (closest — graph + checkpoints), CrewAI (roles, less durability focus), OpenAI Assistants (hosted, opaque state). loom-run is the local runtime slice, not a finished multi-agent product yet.
+
+## Multi-agent roadmap (planned)
+
+```text
+Supervisor step (route / delegate / merge)
+  → subagent A: loom-run chat run (run_id=..., checkpoint)
+  → subagent B: loom-run chat run
+  → supervisor resumes until goal met
+```
+
+Not wired in v0.1. [`agents_architecture`](https://github.com/kroq86/agents_architecture) has production coordinator patterns to extract; OrgMCP leaf → step mapping is a candidate integration.
 
 ## kroq86 stack map
 
@@ -49,14 +64,14 @@ CLI (loom-run chat | serve)
 
 ## Integration gaps (honest)
 
+- **Multi-agent orchestration not wired yet** — v0.1 is single coordinator; supervisor/subagent graph is the next product boundary, not optional nice-to-have.
 - **No unified memory contract** across SQL facts (agents_architecture), DuckDB (docs-memory), and loom-runner SQLite.
 - **MCP bridge** is minimal stdio JSON-RPC — sufficient for presets, not a full MCP client library.
-- **Multi-agent graphs** deferred everywhere; supervisor would be a separate orchestration layer.
 - **flow-xray** traces Python call graph; IDE/CodeClaw traces remain separate formats.
 
-## Deferred
+## Deferred (priority)
 
-- Subagent runtime
+- **Supervisor / subagent runtime** — multi-agent orchestration on top of resumable coordinator runs
 - OrgMCP leaf → loom-run step mapping
 - Unified memory contract across stack repos
 

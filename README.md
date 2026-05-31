@@ -18,9 +18,11 @@ Most agent frameworks optimize for a quick demo. **loom-run** optimizes for **in
 - tool retries → idempotent calls via `loom-runner`
 - “what happened?” → `explain`, tool-call history, optional HTML trace
 
-**Good fit:** local development, CI without API keys (MockLLM), wiring MCP tools with local fallbacks.
+**Good fit today (v0.1):** local development, CI without API keys (MockLLM), wiring MCP tools with local fallbacks, proving the durable run loop.
 
-**Not a fit:** multi-agent orchestration, hosted threads, IDE coding agents, production platform out of the box.
+**Roadmap (required):** multi-agent orchestration — supervisor graph above coordinator steps, each subagent as its own resumable `loom-runner` run. Industry direction in 2026 is durable multi-agent (LangGraph graphs, CrewAI crews, MCP tools); Loom stack targets the same, with local SQLite checkpoints instead of vendor-hosted threads.
+
+**Not a fit today:** hosted threads, IDE coding agents, production platform out of the box — until supervisor + subagent layer lands.
 
 ## Install
 
